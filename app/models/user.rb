@@ -9,7 +9,13 @@ class User < ApplicationRecord
     uniqueness: { case_sensitive: false }
 
   has_secure_password
-  validates :password, presence: true, length: { minimum: 6 }
+  # Here allow_nil is accepted because we want the edit form allows the
+  # the password to be empty but has_secure_password has an internal
+  # validation for this that only affects the signup form because when
+  # we are trying to create a new user the password can't be empty but
+  # when we are editing it the password field already has a password in
+  # the database so the internal validation is not verified for it.
+  validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   class << self
     def digest(string)

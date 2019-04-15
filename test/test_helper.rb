@@ -15,7 +15,7 @@ class ActiveSupport::TestCase
     !session[:user_id].nil?
   end
 
-  # In test units we can uses the session hash
+  # In test cases we can use the session hash
   def log_in_as(user)
     session[:user_id] = user.id
   end
