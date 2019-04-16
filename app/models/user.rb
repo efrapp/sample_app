@@ -18,11 +18,14 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 6 }, allow_nil: true
 
   class << self
+    # The porpouse of this method is to add a digest password to the users
+    # created in the fixtures file. It is also used to create the remember
+    # digest for the remember token.
     def digest(string)
       cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST : 
                                                     BCrypt::Engine.cost
       
-      BCrypt::Password.create(string)
+      BCrypt::Password.create(string, cost: cost)
     end
 
     def new_token
