@@ -80,4 +80,23 @@ class UserTest < ActiveSupport::TestCase
   test "authenticated? should return false for a user with nil digest" do
     assert_not @user.authenticated?(:remember, '')
   end
+
+  test "destroy a user will also destroy microposts associated to it" do
+    # My version
+    # This can have potential problems if the fixture user has more than
+    # one microposts attached to it because the decrement won't be by 1
+    # micropost instead the amount of micropost the user has.
+    assert_difference 'Micropost.count', -1 do
+      user = users(:mafe)
+      user.microposts << microposts(:tau_manifesto)
+      user.destroy
+    end
+
+    # Rails tutorial version
+    @user.save
+    @user.microposts.create(content: 'Lorem ipsum')
+    assert_difference 'Micropost.count', -1 do
+      @user.destroy
+    end
+  end
 end

@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :microposts, dependent: :destroy
+
   attr_accessor :remember_token, :activation_token, :reset_token
 
   before_save :downcase_email
@@ -77,6 +79,14 @@ class User < ApplicationRecord
     # My logic
     # self.reset_sent_at + 2.hour > Time.zone.now
     reset_sent_at < 2.hours.ago
+  end
+
+  # Defines a proto-feed
+  def feed
+    # The question mark ensure that the variable associeted is preperly
+    # scaped before being included in the SQL query avoiding SQL
+    # injection
+    Micropost.where("user_id = ?", id)
   end
 
   private
